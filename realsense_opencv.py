@@ -15,7 +15,7 @@ class NotColorFrame(Exception):
 
 
 class RealSense:
-    def __init__(self, height=480, width=640) -> None:
+    def __init__(self, height=480, width=640, resize_height=360, resize_whidth=640) -> None:
         # RealSenseカメラの初期化
         config = rs.config()
         config.enable_stream(rs.stream.color, width, height, rs.format.bgr8, 30)
@@ -30,6 +30,9 @@ class RealSense:
         # Alignオブジェクト生成
         align_to = rs.stream.color
         self.align = rs.align(align_to)
+
+        self.resize_height = resize_height
+        self.resize_whidth = resize_whidth
 
     def main(self):
         # 画角調整
@@ -55,8 +58,8 @@ class RealSense:
             )
 
             # 画像表示
-            color_image_s = cv2.resize(color_image, (640, 360))
-            depth_colormap_s = cv2.resize(depth_colormap, (640, 360))
+            color_image_s = cv2.resize(color_image, (self.resize_whidth, self.resize_height))
+            depth_colormap_s = cv2.resize(depth_colormap, (self.resize_whidth, self.resize_height))
             images = np.hstack((color_image_s, depth_colormap_s))
             cv2.namedWindow("RealSense", cv2.WINDOW_AUTOSIZE)
             cv2.imshow("RealSense", images)
